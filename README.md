@@ -5,6 +5,8 @@
 
 La plataforma transforma la cámara web (o escenas de video) en una interfaz con estética de **videollamada espectral**, donde la **quietud prolongada, las sombras constantes y los cruces espaciales** se traducen en presencias auditivas. Conforme se despiertan estas entidades, la llamada se duplica en múltiples pantallas, haciendo que la persona termine viéndose en varios recuadros como si estuviera **«hablando consigo misma»** y sus reflejos.
 
+**Demo**: https://debskar.github.io/UmbraEspectral/
+
 ---
 
 ## 1. Concepto y relación imagen–sonido
