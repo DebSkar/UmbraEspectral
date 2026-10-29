@@ -96,27 +96,6 @@ En el panel lateral desplegable se mantuvieron únicamente los parámetros esenc
 4. **Tipografía:**  
    `Space Mono` (monospaced estilo consola/terminal de terror) con sutiles sombras de texto (`text-shadow`) para evocar transmisiones de seguridad o llamadas residuales.
 
-### Capturas de pantalla del sistema
-
-```
-+-----------------------------------------------------------------------------------------+
-| ● REC 02:14  ≡ UMBRA ESPECTRAL  3 de 5 en llamada             [▶ ACTIVAR SONIDO] [⛶]    |
-+--------------------------------------------+--------------------------------------------+
-| [Tú - Principal]                           | [Tú (Susurro · Izq.)]                      |
-|                                            |                                            |
-|   (Bordes de cuadrícula 3x3 en púrpura)     |   (Clon con filtro espectral violeta)      |
-|   Aura resplandeciente: quietud 85%        |   Borde activo: box-shadow púrpura         |
-|   🎤 Tú ⌵                                  |   🎤 Tú (Susurro) ⌵                        |
-+--------------------------------------------+--------------------------------------------+
-| [Tú (Puerta · Centro)]                     | [La Criatura]                              |
-|                                            |                                            |
-|   (Clon con filtro sepia y sombra)         |   (Silueta invertida de alto contraste)    |
-|   Borde activo: box-shadow naranja fuego   |   Resplandor rojo intenso: #ff2222         |
-|   🎤 Tú (Puerta) ⌵                         |   ⚡ La Criatura ⌵                          |
-+--------------------------------------------+--------------------------------------------+
-| [Ejemplo] [Cámara] [Video]                 |                 [↺ Reiniciar llamada (1 p)]|
-+-----------------------------------------------------------------------------------------+
-```
 
 ---
 
