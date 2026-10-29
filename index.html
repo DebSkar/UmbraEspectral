@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Umbra Espectral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="grain" aria-hidden="true"></div>
+
+<!-- Barra superior estilo videollamada -->
+<header class="bar bar-top">
+  <div class="call-meta">
+    <span class="rec-dot-live">●</span>
+    <span class="rec-pill">REC</span>
+    <span class="call-timer" id="callTimer">00:00</span>
+    <span class="sep"></span>
+    <span class="call-title">≡ Umbra Espectral</span>
+    <span class="call-sub"><span id="participantCount">1 de 1</span> en llamada · ⊞ Galería</span>
+  </div>
+  <div class="bar-actions">
+    <button type="button" class="btn-spectral neon" id="soundBtn" aria-pressed="false">▶ Activar sonido</button>
+    <button type="button" id="fsBtn" title="Pantalla completa">⛶ Pantalla completa</button>
+  </div>
+</header>
+
+<!-- Escenario: Grilla de Videollamada con clones espectrales -->
+<main class="stage" id="stage">
+  <div class="call-grid" id="callGrid" data-count="1">
+    
+    <!-- Pantalla Principal (Tú / Host) -->
+    <div class="call-tile main-tile" id="tileMain">
+      <canvas id="view"></canvas>
+      <div class="tile-header">
+        <span class="live-badge">● EN VIVO</span>
+      </div>
+      <div class="readout" aria-live="polite">
+        <div class="note" id="lastNote">—</div>
+        <div class="readout-details">
+          <span class="lbl">evento </span><span class="val" id="lastEvent">Atmósfera en espera</span>
+          <span class="lbl"> · zona </span><span class="val" id="lastZone">—</span>
+          <span class="lbl"> · permanencia </span><span class="val" id="lastStill">—</span>
+        </div>
+        <div class="rule" id="mapText">quietud & sombra → presencia espectral</div>
+      </div>
+      <div class="tile-tag">
+        <span class="mic-icon">🎤</span>
+        <span class="tile-name">Tú</span>
+        <span class="chevron">⌵</span>
+      </div>
+    </div>
+
+    <!-- Clon 1: Susurro (Izquierda) -->
+    <div class="call-tile clone-tile clone-susurro" id="tileSusurro" hidden>
+      <canvas id="canvasSusurro"></canvas>
+      <div class="tile-header">
+        <span class="spectral-badge">SOMBRA IZQUIERDA</span>
+      </div>
+      <div class="tile-tag">
+        <span class="mic-icon">🎤</span>
+        <span class="tile-name">Tú (Susurro · Izq.)</span>
+        <span class="chevron">⌵</span>
+      </div>
+    </div>
+
+    <!-- Clon 2: Puerta (Centro) -->
+    <div class="call-tile clone-tile clone-puerta" id="tilePuerta" hidden>
+      <canvas id="canvasPuerta"></canvas>
+      <div class="tile-header">
+        <span class="spectral-badge orange">PRESENCIA CENTRO</span>
+      </div>
+      <div class="tile-tag">
+        <span class="mic-icon">🎤</span>
+        <span class="tile-name">Tú (Puerta · Centro)</span>
+        <span class="chevron">⌵</span>
+      </div>
+    </div>
+
+    <!-- Clon 3: Pulso (Derecha) -->
+    <div class="call-tile clone-tile clone-pulso" id="tilePulso" hidden>
+      <canvas id="canvasPulso"></canvas>
+      <div class="tile-header">
+        <span class="spectral-badge">SOMBRA DERECHA</span>
+      </div>
+      <div class="tile-tag">
+        <span class="mic-icon">🎤</span>
+        <span class="tile-name">Tú (Pulso · Der.)</span>
+        <span class="chevron">⌵</span>
+      </div>
+    </div>
+
+    <!-- Clon 4: La Criatura (Cambio brusco de luz) -->
+    <div class="call-tile clone-tile clone-criatura" id="tileCriatura" hidden>
+      <canvas id="canvasCriatura"></canvas>
+      <div class="tile-header">
+        <span class="spectral-badge red">ENTIDAD</span>
+      </div>
+      <div class="tile-tag">
+        <span class="mic-icon">⚡</span>
+        <span class="tile-name">La Criatura</span>
+        <span class="chevron">⌵</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- Dock lateral (solo los 5 paneles solicitados) -->
+  <nav class="dock" id="dock" aria-label="Parámetros">
+    <!-- 01 Modo -->
+    <div>
+      <button type="button" class="trigger" aria-expanded="false" data-panel="pMode">
+        <span><span class="num">01</span>Modo</span><span class="state" id="stMode">zonas 3×3</span>
+      </button>
+      <div class="panel" id="pMode" hidden>
+        <div class="panel-bar"><span>01 · Modo de disparo</span><button type="button" data-close>Cerrar</button></div>
+        <div class="seg seg4" role="group" aria-label="Modo">
+          <button type="button" data-mode="zonas" aria-pressed="true">Zonas 3×3</button>
+          <button type="button" data-mode="linea" aria-pressed="false">Línea</button>
+          <button type="button" data-mode="lineas" aria-pressed="false">Líneas</button>
+          <button type="button" data-mode="escaner" aria-pressed="false">Escáner</button>
+        </div>
+        <p class="hint" id="modeHint">Zonas 3×3: Traduce quietud, permanencia y sombra en presencia auditiva (Susurro, Puerta, Pulso).</p>
+        <div class="row" data-show="zonas"><label for="cols">Columnas</label><input type="range" id="cols" min="2" max="12" step="1" value="3"><output id="colsOut">3</output></div>
+        <div class="row" data-show="zonas"><label for="rows">Filas</label><input type="range" id="rows" min="1" max="8" step="1" value="3"><output id="rowsOut">3</output></div>
+        <div class="checks" data-show="zonas">
+          <label><input type="checkbox" id="showLines" checked> mostrar líneas de cuadrícula</label>
+        </div>
+        <div class="row" data-show="linea"><label for="lx">Posición</label><input type="range" id="lx" min="5" max="95" step="1" value="50"><output id="lxOut">50 %</output></div>
+        <div class="row" data-show="lineas"><label for="nl">Líneas</label><input type="range" id="nl" min="2" max="4" step="1" value="3"><output id="nlOut">3</output></div>
+        <div class="row" data-show="linea lineas escaner"><label for="segs">Tramos</label><input type="range" id="segs" min="3" max="12" step="1" value="7"><output id="segsOut">7</output></div>
+        <div class="row" data-show="escaner"><label for="sdur">Vuelta</label><input type="range" id="sdur" min="2" max="20" step="1" value="6"><output id="sdurOut">6 s</output></div>
+        <div class="row" data-show="escaner"><label for="steps">Pasos</label><input type="range" id="steps" min="8" max="32" step="1" value="16"><output id="stepsOut">16</output></div>
+        <div class="row" data-show="escaner"><label for="bright">Brillo mín.</label><input type="range" id="bright" min="30" max="240" step="1" value="90"><output id="brightOut">90</output></div>
+        <div class="checks" data-show="linea lineas">
+          <label><input type="checkbox" id="mapDir"> dirección del cruce → octava</label>
+        </div>
+        <div class="checks" data-show="escaner">
+          <label><input type="checkbox" id="invert"> invertir: leer lo oscuro en vez de lo claro</label>
+        </div>
+        <ol class="voices" id="voices" data-show="lineas"></ol>
+      </div>
+    </div>
+
+    <!-- 02 Visualización -->
+    <div>
+      <button type="button" class="trigger" aria-expanded="false" data-panel="pVis">
+        <span><span class="num">02</span>Visualización</span><span class="state" id="stVis">espectral</span>
+      </button>
+      <div class="panel" id="pVis" hidden>
+        <div class="panel-bar"><span>02 · Visualización</span><button type="button" data-close>Cerrar</button></div>
+        <div class="seg" role="group" aria-label="Fondo">
+          <button type="button" data-view="mix" aria-pressed="true">Video</button>
+          <button type="button" data-view="mask" aria-pressed="false">Máquina</button>
+        </div>
+        <p class="hint">Máquina muestra la silueta de los píxeles que cambiaron en la oscuridad.</p>
+        <div class="row"><label for="tint">Aura espectral</label><input type="range" id="tint" min="0" max="60" step="1" value="28"><output id="tintOut">28 %</output></div>
+        <div class="row"><label for="veil">Oscurecer</label><input type="range" id="veil" min="0" max="70" step="1" value="15"><output id="veilOut">15 %</output></div>
+      </div>
+    </div>
+
+    <!-- 04 Detección -->
+    <div>
+      <button type="button" class="trigger" aria-expanded="false" data-panel="pDet">
+        <span><span class="num">04</span>Detección</span><span class="state" id="stDet">sombra</span>
+      </button>
+      <div class="panel" id="pDet" hidden>
+        <div class="panel-bar"><span>04 · Detección</span><button type="button" data-close>Cerrar</button></div>
+        <div class="row"><label for="thr">Umbral píxel</label><input type="range" id="thr" min="8" max="80" step="1" value="28"><output id="thrOut">28</output></div>
+        <div class="row"><label for="sens">Sensibilidad</label><input type="range" id="sens" min="1" max="40" step="1" value="3"><output id="sensOut">3 %</output></div>
+        <div class="row"><label for="cool">Tiempo quietud</label><input type="range" id="cool" min="500" max="4000" step="100" value="1600"><output id="coolOut">1.6 s</output></div>
+        <p class="hint">Tiempo mínimo de permanencia o sombra en una zona para acumular el aura y despertar la presencia auditiva.</p>
+      </div>
+    </div>
+
+    <!-- 06 Mapping -->
+    <div>
+      <button type="button" class="trigger" aria-expanded="false" data-panel="pMap">
+        <span><span class="num">06</span>Mapping</span><span class="state" id="stMap">activo</span>
+      </button>
+      <div class="panel" id="pMap" hidden>
+        <div class="panel-bar"><span>06 · Reglas de presencia</span><button type="button" data-close>Cerrar</button></div>
+        <div class="checks">
+          <label><input type="checkbox" checked disabled> <span>Quietud + Posición → Presencia</span></label>
+          <label><input type="checkbox" id="mapVel" checked> Movimiento rápido → Sube Atmósfera</label>
+          <label><input type="checkbox" id="mapPan" checked> Posición X → Paneo Estéreo</label>
+          <label><input type="checkbox" id="mirror" checked> Espejo (cámara)</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- 07 Grabar -->
+    <div>
+      <button type="button" class="trigger" aria-expanded="false" data-panel="pRec">
+        <span><span class="num">07</span>Grabar</span><span class="state" id="stRec">—</span>
+      </button>
+      <div class="panel" id="pRec" hidden>
+        <div class="panel-bar"><span>07 · Registro de sesión</span><button type="button" data-close>Cerrar</button></div>
+        <div class="btnrow">
+          <button type="button" class="rec" id="recBtn" aria-pressed="false">● Grabar</button>
+          <span class="mono" id="recTime">0:00</span>
+          <button type="button" id="recDl" disabled>Descargar audio</button>
+        </div>
+        <p class="hint" id="recHint">Captura la experiencia sonora completa de la llamada.</p>
+      </div>
+    </div>
+  </nav>
+</main>
+
+<!-- Barra inferior con controles de llamada y fuentes -->
+<footer class="bar bar-bottom">
+  <div class="group-inline seg" role="group" aria-label="Fuente">
+    <button type="button" id="srcDemo" aria-pressed="true">Ejemplo</button>
+    <button type="button" id="srcCam" aria-pressed="false">Cámara</button>
+    <button type="button" id="srcFile" aria-pressed="false">Video</button>
+  </div>
+
+  <div class="group-inline" id="camCtx" hidden>
+    <button type="button" id="camOff">Apagar cámara</button>
+  </div>
+
+  <div class="group-inline" id="vidCtx" hidden>
+    <button type="button" id="vPlay">▶ Play</button>
+    <button type="button" id="vPause">❚❚ Pausa</button>
+    <button type="button" id="vLoop" aria-pressed="true">⟲ Loop</button>
+    <button type="button" id="vChange">Cambiar</button>
+  </div>
+
+  <input type="file" id="fileInput" accept="video/*" hidden>
+
+  <span class="grow"></span>
+
+  <!-- Botón estilo videollamada para reiniciar los clones a 1 pantalla -->
+  <div class="group-inline">
+    <button type="button" class="btn-call-reset" id="resetClonesBtn" title="Volver a 1 sola pantalla">
+      ↺ Reiniciar llamada (1 pantalla)
+    </button>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
